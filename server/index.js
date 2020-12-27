@@ -1,9 +1,12 @@
+const { json } = require('express');
 const express = require('express');
 const mongoose = require('mongoose');
 
 require('dotenv').config()
 
 const app = express();
+
+app.use(express.json()) //to pass the body
 
 const authRoutes = require('./routes/auth')
 
@@ -12,7 +15,6 @@ app.get('/', (req, res) => {
   res.send('Welcome to the auth system')
 
 })
-
 
 app.use('/api/users', authRoutes);
 
