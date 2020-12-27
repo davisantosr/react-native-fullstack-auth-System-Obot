@@ -1,10 +1,31 @@
 const express = require('express');
+const {check, validationResult } = require('express-validator')
 
 const router = express.Router();
 
 const User = require('../models/User')
 
-router.post('/register', async (req, res) => {
+const validate = [
+  check('fullName')
+    .isLength({min:2})
+    .withMessage('Your Name is Required'),
+  check('email')
+    .isEmail()
+    .withMessage('Please provide a valid email'),
+  check('password')
+    .isLength({min: 6})
+    .withMessage('Password must be at least six characters')
+]
+
+router.post('/register', validate, async (req, res) => {
+
+  const errors = validationResult(req)
+
+  if(!errors.isEmpty()) {
+    return res.status(422).json({'errors': errors.array()})
+  }
+
+
   const user = new User({
     fullName: req.body.fullName, 
     email: req.body.email, 
