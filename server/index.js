@@ -1,4 +1,7 @@
 const express = require('express');
+const mongoose = require('mongoose');
+
+require('dotenv').config()
 
 const app = express();
 
@@ -10,6 +13,13 @@ app.get('/', (req, res) => {
 
 })
 
+
 app.use('/api/users', authRoutes);
 
-app.listen(5000, () => console.log('Server is running on port 5000'))
+mongoose.connect(
+  `mongodb+srv://auth-system-user:${process.env.MONGO_PASSWORD}@cluster0.r18du.mongodb.net/authSystem?retryWrites=true&w=majority`,
+  {useNewUrlParser: true, useUnifiedTopology: true})
+    .then(() => {
+      app.listen(5000, () => console.log('Server is running on port 5000'))}
+    )
+    .catch(err => console.log(err))
