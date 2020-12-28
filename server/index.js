@@ -10,10 +10,19 @@ app.use(express.json()) //to pass the body
 
 const authRoutes = require('./routes/auth')
 
+//middleware for protect route
+const verifyToken = require('./routes/verifyToken')
+
 
 app.get('/', (req, res) => {
   res.send('Welcome to the auth system')
 
+})
+
+//Demo how to protect route
+
+app.get('/api/user/profile', verifyToken, (req, res) => {
+  res.send('This is the user profile')
 })
 
 app.use('/api/users', authRoutes);
