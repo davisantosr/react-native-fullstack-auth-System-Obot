@@ -18,6 +18,15 @@ const validate = [
     .withMessage('Password must be at least six characters')
 ]
 
+const loginValidation = [
+  check('email')
+    .isEmail()
+    .withMessage('Please provide a valid email'),
+  check('password')
+    .isLength({min: 6})
+    .withMessage('Password must be at least six characters')
+]
+
 router.post('/register', validate, async (req, res) => {
 
   const errors = validationResult(req)
@@ -54,7 +63,13 @@ router.post('/register', validate, async (req, res) => {
 })
 
 
-router.post('/login', async (req, res) => {
+router.post('/login', loginValidation, async (req, res) => {
+
+  const errors = validationResult(req)
+
+  if(!errors.isEmpty()) {
+    return res.status(422).json({'errors': errors.array()})
+  }
   //check if email exists
   const user = await User.findOne({email: req.body.email})
   if(!user) return res.status(404).send('User is not registered')
