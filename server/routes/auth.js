@@ -1,6 +1,7 @@
 const express = require('express');
 const {check, validationResult } = require('express-validator')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
 const router = express.Router();
 
@@ -77,7 +78,10 @@ router.post('/login', loginValidation, async (req, res) => {
   //check if password matches
   const validPassword = await bcrypt.compare(req.body.password, user.password)
   if(!validPassword) return res.status(404).send('Invalid email or password')
-  res.send('Logged in...')
+
+  //create and assign a token
+  const token = jwt.sign({_id: user._id, email: user.email}, 'SUPERSECRET123')
+  res.header('auth-token', token).send({message: 'logged in successfully', token})
 })
 
 module.exports = router;
